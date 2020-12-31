@@ -1,6 +1,6 @@
 const request = require('supertest'); 
 const app = require('../../src/app');
-const {User} = require('../../src/app/models');
+const factory = require('../factories');
 const truncate = require('../utils/truncate');
 
 
@@ -14,10 +14,8 @@ beforeEach(async () =>
 
 it('Should atuthenticate with valid credentials', async ()=>
 {
-  const user = await User.create(
+  const user = await factory.create('User',
       {
-          name: 'David', 
-          email: 'david@david.com', 
           password: "123123"
       }
   ); 
@@ -34,10 +32,8 @@ it('Should atuthenticate with valid credentials', async ()=>
 
 it('Should not atuthenticate with valid credentials', async ()=>
 {
-  const user = await User.create(
+  const user = await factory.create('User',
       {
-          name: 'David', 
-          email: 'david@david.com', 
           password: "123123"
       }
   ); 
@@ -52,4 +48,24 @@ it('Should not atuthenticate with valid credentials', async ()=>
   expect(response.status).toBe(401);
 });
 
+it('should return a jwt token when authenticated', async () => 
+{
+  const user = await factory.create('User',
+      {
+          password: "123123"
+      }
+  ); 
+
+const response = await request(app)
+.post("/sessions")
+    .send({
+      email: user.email, 
+      password: "123123"
+    }); 
+
+expect(response.body).toHaveProperty("token"); 
+})
+{
+
+}
 });
