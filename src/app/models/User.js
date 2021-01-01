@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) =>
                 console.log(user.password);
                 if(user.password)
                 {
-                    console.log('tá na funfancia');
                     user.password_hash = await bcrypt.hash(user.password, 8);
                 }
             }
